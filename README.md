@@ -1,16 +1,28 @@
-# React + Vite
+# TwilightCipher 🔐
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TwilightCipher is a frontend prototype of an AI-powered cybersecurity dashboard designed to analyze URLs and warn users about potentially unsafe or suspicious links.
 
-Currently, two official plugins are available:
+## 🚀 Features
+- URL input and scan simulation
+- Trust score visualization
+- Safety status indicators (Safe / Suspicious / Dangerous)
+- Clean, minimal dark UI with pastel highlights
+- Modular React component structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧠 How it works (Current Stage)
+This version uses **frontend-only logic** to simulate URL analysis.
+Real-time threat detection, databases, and APIs will be added in future versions.
 
-## React Compiler
+## 🛠 Tech Stack
+- React (Vite)
+- JavaScript
+- Custom CSS
+- Git & GitHub
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📌 Project Status
+- Frontend prototype: ✅ Completed
+- Backend & real URL scanning: ⏳ Planned
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Built as a learning and showcase project.
