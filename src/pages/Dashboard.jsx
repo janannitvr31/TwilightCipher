@@ -1,143 +1,105 @@
 import { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import SafeLinkCard from "../components/SafeLinkCard";
-import MetricCard from "../components/MetricCard";
-import ActivityCard from "../components/ActivityCard";
-import ScoreInfoCard from "../components/ScoreInfoCard";
-
-const API_URL = "http://localhost:5000";
 
 export default function Dashboard() {
-  const [urlInput, setUrlInput] = useState("");
+  const [url, setUrl] = useState("");
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [scanned, setScanned] = useState(false);
-  const [isSafe, setIsSafe] = useState(null);
-  const [trustScore, setTrustScore] = useState(0);
-  const [scanMessage, setScanMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const handleScan = async () => {
-    if (!urlInput) return;
-
-    setLoading(true);
-    setScanned(false);
-
-    try {
-      const res = await fetch(`${API_URL}/scan`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ url: urlInput })
-      });
-
-      const data = await res.json();
-
-      setIsSafe(data.safe);
-      setTrustScore(data.trustScore);
-      setScanMessage(data.message);
-      setScanned(true);
-    } catch (err) {
-      setScanMessage("Backend not reachable");
-      setScanned(true);
+  const scanLink = async () => {
+    if (!url) {
+      alert("Please enter a URL");
+      return;
     }
 
-    setLoading(false);
+    try {
+      setLoading(true);
+      setError("");
+      setResult(null);
+
+      const res = await fetch(
+        `http://localhost:5000/scan?url=${encodeURIComponent(url)}`
+      );
+
+      if (!res.ok) {
+        throw new Error("Backend not reachable");
+      }
+
+      const data = await res.json();
+      setResult(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar />
+    <div
+      style={{
+        flex: 1,
+        minHeight: "100vh",
+        padding: "40px",
+        color: "white",
+        background: "rgba(0,0,0,0.25)",
+        backdropFilter: "blur(6px)"
+      }}
+    >
+      <h1 style={{ fontSize: "26px", marginBottom: "20px" }}>
+        TwilightCipher Dashboard
+      </h1>
 
-      <main
+      <input
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="Paste URL to scan"
         style={{
-          flex: 1,
-          padding: "1.5rem",
-          background: "#0b1220",
-          color: "#e5e7eb"
+          width: "100%",
+          maxWidth: "500px",
+          padding: "12px",
+          borderRadius: "8px",
+          border: "none",
+          marginBottom: "16px"
+        }}
+      />
+
+      <br />
+
+      <button
+        onClick={scanLink}
+        disabled={loading}
+        style={{
+          padding: "12px 24px",
+          borderRadius: "8px",
+          border: "none",
+          background: "#3ecbff",
+          color: "#000",
+          fontWeight: "bold",
+          cursor: "pointer"
         }}
       >
-        {/* TOP INPUT */}
-        <div style={{ marginBottom: "1.5rem" }}>
-          <h2>Scan a Link</h2>
-          <div style={{ display: "flex", gap: "0.6rem" }}>
-            <input
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              placeholder="https://example.com"
-              style={{
-                flex: 1,
-                padding: "0.6rem",
-                borderRadius: "8px",
-                border: "none"
-              }}
-            />
-            <button
-              onClick={handleScan}
-              disabled={loading}
-              style={{
-                padding: "0.6rem 1.2rem",
-                borderRadius: "8px",
-                background: "#3bc9ff",
-                border: "none",
-                fontWeight: "600",
-                cursor: "pointer"
-              }}
-            >
-              {loading ? "Scanning..." : "Scan"}
-            </button>
-          </div>
+        {loading ? "Scanning..." : "Scan Link"}
+      </button>
+
+      {/* RESULT */}
+      {result && (
+        <div style={{ marginTop: "30px" }}>
+          <h3>Result</h3>
+          <p>Status: <b>{result.status}</b></p>
+          <p>Score: <b>{result.score}</b></p>
+          <ul>
+            {result.reasons.map((r, i) => (
+              <li key={i}>{r}</li>
+            ))}
+          </ul>
         </div>
+      )}
 
-        {/* LEFT CONTENT */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "1rem" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <ActivityCard />
-            <MetricCard title="Sites Analysed" value={scanned ? 1 : 0} />
-            <MetricCard title="Threats Detected" value={scanned && !isSafe ? 1 : 0} />
-          </div>
-
-          {/* RIGHT CONTENT */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {scanned && (
-              <>
-                <SafeLinkCard safe={isSafe} message={scanMessage} />
-
-                <div
-                  style={{
-                    background: "#0e1a33",
-                    padding: "1rem",
-                    borderRadius: "14px"
-                  }}
-                >
-                  <h4>Trust Score</h4>
-                  <div
-                    style={{
-                      height: "10px",
-                      background: "#1f2937",
-                      borderRadius: "6px",
-                      marginTop: "0.5rem"
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${trustScore}%`,
-                        height: "100%",
-                        background: "#3bc9ff",
-                        borderRadius: "6px"
-                      }}
-                    />
-                  </div>
-                  <p style={{ marginTop: "0.5rem", fontWeight: "600" }}>
-                    {trustScore}%
-                  </p>
-                </div>
-
-                <ScoreInfoCard />
-              </>
-            )}
-          </div>
-        </div>
-      </main>
+      {error && (
+        <p style={{ marginTop: "20px", color: "red" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }

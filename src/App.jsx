@@ -1,8 +1,16 @@
-import './App.css'
-import React from 'react'
-import Dashboard from './pages/Dashboard'
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./pages/Dashboard";
 
-export default function App() {
-  return <Dashboard />
+function App() {
+  return (
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      <Sidebar />
+
+      <div style={{ flex: 1, padding: "20px" }}>
+        <Dashboard />
+      </div>
+    </div>
+  );
 }
 
+export default App;
