@@ -1,0 +1,20 @@
+#root {
+  min-height: 100vh;
+
+  /* BASE DARK */
+  background-color: #050b1a;
+
+  /* DEBUG GRID */
+  background-image:
+    linear-gradient(
+      rgba(0, 255, 0, 0.4) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.4) 1px,
+      transparent 1px
+    );
+
+  background-size: 40px 40px;
+}
